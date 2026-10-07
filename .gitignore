@@ -4,3 +4,4 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 report/
+models/random_forest_tfidf.joblib
