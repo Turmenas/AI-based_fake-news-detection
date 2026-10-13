@@ -5,3 +5,5 @@ __pycache__/
 .env
 report/
 models/random_forest_tfidf.joblib
+models/distilbert_6way.keras
+models/bigru_6way.keras

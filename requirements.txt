@@ -1,8 +1,14 @@
-jupyter==1.1.1
+--extra-index-url https://download.pytorch.org/whl/cu128
+huggingface-hub==2.2.0
 joblib==1.6.0
+jupyter==1.1.1
+keras-hub==0.32.0
+keras==3.15.1
 matplotlib==3.11.2
 numpy==2.5.2
 pandas==3.0.6
 scikit-learn==1.9.1
 scipy==1.18.1
 seaborn==0.13.2
+tokenizers==0.23.3
+torch==2.11.0+cu128
