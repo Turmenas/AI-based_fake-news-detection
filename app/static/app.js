@@ -264,25 +264,6 @@ class Submission {
 }
 
 
-class HelpNote {
-  constructor(scene) {
-    this.help = document.getElementById("help");
-    this.note = document.getElementById("note");
-    const sound = document.getElementById("sound");
-    sound.hidden = !scene.audio && !scene.flips.length;  // be jokiu garsu jungiklio nereikia
-    sound.addEventListener("click", () => { sound.textContent = scene.toggle() ? "Sound: off" : "Sound: on"; });
-    this.help.addEventListener("click", () => this.toggle());
-    addEventListener("keydown", e => { if (e.key === "Escape") this.toggle(false); });
-    addEventListener("pointerdown", e => { if (!this.note.hidden && !this.note.contains(e.target) && e.target !== this.help) this.toggle(false); });
-  }
-
-  toggle(open = this.note.hidden) {
-    this.note.hidden = !open;
-    this.help.setAttribute("aria-expanded", open);
-  }
-}
-
-
 (async () => {
   const press = new Press(), issue = new Issue();
   const magazine = new Magazine(document.getElementById("book"), issue);
@@ -290,5 +271,7 @@ class HelpNote {
   const assets = await press.assets().catch(() => ({ scenes: {}, covers: [], sfx: [] }));  // be fono zurnalas vis tiek veikia
   const scene = new Scene(assets);
   magazine.onFlip = () => scene.flip();
-  new HelpNote(scene);
+  const sound = document.getElementById("sound");  // "?" pastaba yra narsykles popover: atidaro, uzdaro su Esc ir paspaudus salia pati
+  sound.hidden = !scene.audio && !scene.flips.length;  // be jokiu garsu jungiklio nereikia
+  sound.addEventListener("click", () => { sound.textContent = scene.toggle() ? "Sound: off" : "Sound: on"; });
 })();
