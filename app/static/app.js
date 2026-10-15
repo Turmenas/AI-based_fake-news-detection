@@ -17,6 +17,7 @@ const TAPES = {
 const CORNER = { tl: [0, 0], tr: [100, 0], bl: [0, 100], br: [100, 100] };
 const DATE = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PHONE = matchMedia("(max-width: 760px)").matches;  // ponytail: parenkama krovimo metu; perejus 760 px riba reikia perkrauti
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pct = p => (p * 100 >= 99.95 ? "99.9" : p * 100 < 0.05 ? "<0.1" : (p * 100).toFixed(1));
@@ -44,7 +45,7 @@ class Scene {
       document.getElementById("cover-photo").style.backgroundImage = `url("${cover.url}")`;
       document.getElementById("cover-credit").textContent = cover.credit && `Photo: ${cover.credit}`;
     }
-    this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, volume: 0 }) : null;  // garsas is tos pacios vietos kaip nuotrauka
+    this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, volume: 0, preload: "none" }) : null;  // garsas is tos pacios vietos kaip nuotrauka; preload none: keli MB siunciami tik kai pradeda groti
     this.flips = assets.sfx;
     this.muted = false;
     for (const ev of ["pointerdown", "keydown"]) addEventListener(ev, () => this.#start(), { once: true });  // narsykle neleidzia garso iki pirmo paspaudimo
@@ -166,8 +167,8 @@ class Magazine {
     document.getElementById("cover-date").textContent = DATE;
     for (const page of el.querySelectorAll("[data-sec]")) this.#fill(page, page.querySelector(".pg").innerHTML);  // antraste ir folio visiems vidiniams puslapiams
     this.render(false);
-    this.book = new St.PageFlip(el, { width: 400, height: 525, size: "stretch", minWidth: 280, maxWidth: 1000, minHeight: 368, maxHeight: 1313,
-      showCover: true, maxShadowOpacity: .45, flippingTime: REDUCE ? 1 : 900, mobileScrollSupport: false, disableFlipByClick: true });  // 400x525 = TIME proporcijos
+    this.book = new St.PageFlip(el, { width: 400, height: PHONE ? 760 : 525, size: "stretch", minWidth: 280, maxWidth: 1000, minHeight: 368, maxHeight: 1313,
+      showCover: true, maxShadowOpacity: .45, flippingTime: REDUCE ? 1 : 900, mobileScrollSupport: false, disableFlipByClick: true });  // 400x525 = TIME proporcijos; telefone aukstesnis, kad tilptu didesnis tekstas
     this.book.loadFromHTML(el.querySelectorAll(".page"));
     this.book.on("changeState", e => { if (e.data === "flipping") this.onFlip?.(); });  // garsas vos puslapis pradeda verstis
     addEventListener("keydown", e => {

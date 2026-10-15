@@ -3,6 +3,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -46,6 +47,7 @@ class PhotoIn(BaseModel):
 
 headlines, photos, library = HeadlineModel(), PhotoModel(), SceneLibrary()  # modeliai kraunami viena karta paleidziant
 app = FastAPI(title="Headline Checker")
+app.add_middleware(GZipMiddleware)  # suspaudzia JS, CSS ir HTML
 
 
 @app.get("/api/assets")

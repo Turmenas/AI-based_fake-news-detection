@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' blob:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="FACT is a classroom prototype that checks whether a headline reads like fake news and whether its photo looks AI-generated, laid out as a magazine you flip through.">
 <title>FACT · Headline Checker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,900;1,400&family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=Caveat:wght@500;700&family=Libre+Franklin:wght@400;600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@400;900&family=Bodoni+Moda:opsz,wght@6..96,900&family=Caveat:wght@700&family=Libre+Franklin:wght@400;600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap">
 <link rel="icon" href="qt.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -60,9 +62,9 @@
     <h2>How this issue was made</h2>
     <p class="deck">Two models read every submission. Neither one knows what is true.</p>
     <div class="cols">
-      <p>Every headline in FACT is read by DistilBERT, a language model that was fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by the subreddit it came from, from r/TheOnion to r/usnews, so the model learned how fake and real posts tend to be written.</p>
-      <p>Photos go to CLIP, an image model that turns a picture into 768 numbers, and a small classifier trained on 10,000 news photos, half of them made by Midjourney. It is very good at that one generator and weaker on others.</p>
-      <p>Both verdicts sit side by side on page 3, because a true-sounding story can carry a made-up picture. Neither model knows what is true. They know what fake news on Reddit used to look like, which is why a person should always make the final call.</p>
+      <p>Every headline in FACT is read by DistilBERT, a language model that was fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by its subreddit, so the model learned how fake and real posts tend to be written.</p>
+      <p>Photos go to CLIP and a small classifier trained on 10,000 news photos, half of them made by Midjourney. It knows that one generator well and others less.</p>
+      <p>Neither model knows what is true, only what fake news on Reddit used to look like. A person should always make the final call.</p>
     </div>
     <span class="sign">The editors</span></div></div>
   <div class="page back" data-density="hard"><div class="pg"><span class="psa">A public service message</span>
@@ -73,7 +75,7 @@
 <div class="note" id="note" popover>
   <h3>How to read FACT</h3>
   <ol>
-    <li>Open the magazine: drag the bottom-right corner, click a corner, or press the right arrow key.</li>
+    <li>Open the magazine: swipe, drag a page corner, click a corner, or press the right arrow key.</li>
     <li>Write the headline you want checked on the lines on page 2, then press Enter.</li>
     <li>If it came with a photo, click the dashed box or drop the image on it.</li>
     <li>Both verdicts print on page 3. Keep turning pages to see why.</li>
@@ -82,7 +84,7 @@
 </div>
 <input type="file" id="file" accept="image/*" hidden>
 
-<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script src="page-flip.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
