@@ -25,6 +25,6 @@ A web page styled as a news magazine (FACT). The reader writes a headline on pag
 
 Then open http://127.0.0.1:8000, or double-click `run.bat`, which starts the server in its own window and opens the browser once the models are loaded. It needs `models/distilbert_6way.keras` and `models/clip_logreg.joblib` from those notebooks. The first start loads both models, which takes about a minute.
 
-- `app/static/scenes/<place>/` holds the background photos, picked at random on each load, and `app/static/scenes/<place>/audio/` the matching background sounds (not in the repository). `app/static/covers/` holds cover images.
+- `app/static/scenes/<place>/` holds the background photos, picked at random on each load, and `app/static/scenes/<place>/audio/` the matching background sounds (not in the repository). `app/static/covers/` holds cover images and `app/static/sfx/` the page-turn sound. File names don't matter: the app lists these folders every time the page loads.
 - Background photos from [Unsplash](https://unsplash.com/license): Daan Evers (café), Yasir Ekinci (city), Mark Harpur and Mike Benna (nature).
 - `python -m app.check_app` checks that both models load and answer as expected.
