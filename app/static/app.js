@@ -181,7 +181,10 @@ class Magazine {
     this.book = new St.PageFlip(el, { width: 400, height: PHONE ? 760 : 525, size: "stretch", minWidth: 280, maxWidth: 1000, minHeight: 368, maxHeight: 1313,
       showCover: true, maxShadowOpacity: .45, flippingTime: REDUCE ? 1 : 900, mobileScrollSupport: false, disableFlipByClick: true });  // 400x525 = TIME proporcijos; telefone aukstesnis, kad tilptu didesnis tekstas
     this.book.loadFromHTML(el.querySelectorAll(".page"));
-    this.book.on("changeState", e => { if (e.data === "flipping") this.onFlip?.(); });  // garsas vos puslapis pradeda verstis
+    this.book.on("changeState", e => {  // garsas vos puslapis pakyla: tempiant tai user_fold, klavisais ir kampu flipping
+      if (e.data === "user_fold" || (e.data === "flipping" && this.state !== "user_fold")) this.onFlip?.();  // greitas braukimas eina user_fold -> flipping, antras garsas nereikalingas
+      this.state = e.data;
+    });
     addEventListener("keydown", e => {
       if (e.target.tagName === "TEXTAREA") return;  // rasant rodykles juda tekste, ne puslapiuose
       if (e.key === "ArrowRight") this.book.flipNext();
