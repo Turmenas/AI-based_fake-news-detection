@@ -112,7 +112,7 @@ class Issue {
       const half = (Math.abs(v) / max * 50).toFixed(1);
       return `<div class="w">${esc(w)}</div><div class="track"><b style="${v > 0 ? `left:50%;width:${half}%;background:var(--fake)` : `right:50%;width:${half}%;background:var(--real)`}"></b></div>`;
     }).join("");
-    return top + `<p class="deck">We took one word out at a time and asked the model again. The longer the bar, the more that word moved the verdict.</p>
+    return top + `<p class="deck">Each word was taken out in turn and the headline checked again. The longer the bar, the more that word moved the verdict.</p>
       <div class="key"><span style="color:var(--real)">← TOWARD REAL</span><span style="color:var(--fake)">TOWARD FAKE →</span></div>
       <div class="words">${bars}</div>
       <p class="small foot">This explains the model, not the facts. A word like “study” is a style clue it learned from Reddit, not proof of anything.</p>`;

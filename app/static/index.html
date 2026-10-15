@@ -17,7 +17,7 @@
   <div class="page cover" data-density="hard"><div class="photo" id="cover-photo"></div><div class="frame"></div><div class="mast" role="img" aria-label="FACT">FAC<span class="qt"></span></div>
     <div class="date" id="cover-date"></div><div class="credit">Photo: FACT archive</div>
     <div class="lines"><span class="kicker">IS IT REAL?</span><h1>Check any headline before you share it</h1>
-      <span class="teaser">Write it on page 2. Our AI reads it, looks at the photo and prints the verdict.</span></div>
+      <span class="teaser">Write it on page 2. An AI reads it, checks the photo and prints the verdict.</span></div>
     <div class="dogear"></div></div>
 
   <div class="page left" id="p2" data-sec="The|Conversation|Reader submission"><div class="pg">
@@ -59,7 +59,7 @@
     <h2>How this issue was made</h2>
     <p class="deck">Two models read every submission. Neither one knows what is true.</p>
     <div class="cols">
-      <p>Every headline in FACT is read by DistilBERT, a language model we fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by the subreddit it came from, from r/TheOnion to r/usnews, so the model learned how fake and real posts tend to be written.</p>
+      <p>Every headline in FACT is read by DistilBERT, a language model that was fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by the subreddit it came from, from r/TheOnion to r/usnews, so the model learned how fake and real posts tend to be written.</p>
       <p>Photos go to CLIP, an image model that turns a picture into 768 numbers, and a small classifier trained on 10,000 news photos, half of them made by Midjourney. It is very good at that one generator and weaker on others.</p>
       <p>Both verdicts sit side by side on page 3, because a true-sounding story can carry a made-up picture. Neither model knows what is true. They know what fake news on Reddit used to look like, which is why a person should always make the final call.</p>
     </div>
