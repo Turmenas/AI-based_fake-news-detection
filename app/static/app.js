@@ -45,29 +45,40 @@ class Scene {
       document.getElementById("cover-photo").style.backgroundImage = `url("${cover.url}")`;
       document.getElementById("cover-credit").textContent = cover.credit && `Photo: ${cover.credit}`;
     }
-    this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, volume: 0, preload: "none" }) : null;  // garsas is tos pacios vietos kaip nuotrauka; preload none: keli MB siunciami tik kai pradeda groti
+    this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, preload: "none" }) : null;  // garsas is tos pacios vietos kaip nuotrauka; preload none: keli MB siunciami tik kai pradeda groti
     this.flips = assets.sfx;
     this.muted = false;
-    for (const ev of ["pointerdown", "keydown"]) addEventListener(ev, () => this.#start(), { once: true });  // narsykle neleidzia garso iki pirmo paspaudimo
+    for (const ev of ["pointerdown", "pointerup", "keydown"]) addEventListener(ev, () => this.#start());  // garsas leidziamas tik po gesto: pelei tai pointerdown, liecimui tik pointerup
   }
 
   flip() {
-    if (this.muted || !this.flips.length) return;
+    if (!this.ctx || this.muted || !this.flips.length) return;
     const a = new Audio(pick(this.flips));  // nauja kopija kiekvienam vertimui, kad greiti vertimai nenukirstu vienas kito
-    a.volume = .6;
+    this.#route(a, 3500, .35);  // tylesnis, be astriu aukstuju dazniu
     a.play().catch(() => {});
   }
 
   #start() {
-    if (!this.audio || this.started) return;
-    this.started = true;
-    this.audio.play().catch(() => {});
-    const fade = setInterval(() => { this.audio.volume = Math.min(.35, this.audio.volume + .02); if (this.audio.volume >= .35) clearInterval(fade); }, 120);  // tyliai ijungiam per kelias sekundes
+    if (this.ctx?.state === "running" || (!this.audio && !this.flips.length)) return;
+    if (!this.ctx) {
+      this.ctx = new AudioContext();
+      this.master = new GainNode(this.ctx, { gain: this.muted ? 0 : 1 });
+      this.master.connect(this.ctx.destination);
+      if (this.audio) this.#route(this.audio, 1800, 0).gain.setTargetAtTime(.25, this.ctx.currentTime, 1);  // fonas prislopintas, ~70 % buvusio .35 garsumo, ijungiamas per kelias sekundes
+    }
+    this.ctx.resume();  // liecimo pointerdown sukuria sustabdyta konteksta, pointerup ji paleidzia
+    this.audio?.play().catch(() => {});
+  }
+
+  #route(el, hz, vol) {  // elementas -> zemu dazniu filtras (prislopina) -> garsumas -> bendras jungiklis
+    const gain = new GainNode(this.ctx, { gain: vol });
+    this.ctx.createMediaElementSource(el).connect(new BiquadFilterNode(this.ctx, { type: "lowpass", frequency: hz })).connect(gain).connect(this.master);
+    return gain;
   }
 
   toggle() {
     this.muted = !this.muted;
-    if (this.audio) this.audio.muted = this.muted;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 1;
     return this.muted;
   }
 }

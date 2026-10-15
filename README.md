@@ -27,6 +27,7 @@ Then open http://127.0.0.1:8000, or double-click `run.bat`, which starts the ser
 
 - `app/static/scenes/<place>/` holds the background photos, picked at random on each load, and `app/static/scenes/<place>/audio/` the matching background sounds. `app/static/covers/` holds cover images (with the credit shown on the cover in `covers/credits.json`) and `app/static/sfx/` the page-turn sound. File names don't matter: the app lists these folders every time the page loads.
 - Background photos from [Unsplash](https://unsplash.com/license): Daan Evers (café), Yasir Ekinci (city), Mark Harpur and Mike Benna (nature).
+- Fonts (Besley, Bodoni Moda, Caveat, Libre Franklin, Source Serif 4) from [Google Fonts](https://fonts.google.com/), [SIL Open Font License 1.1](https://openfontlicense.org/), stored in `app/static/fonts/`.
 - Page turning: [StPageFlip](https://github.com/Nodlik/StPageFlip) 2.0.7 (MIT licence), bundled as `app/static/page-flip.js`.
 - Background sounds and the page-turn sound from [Pixabay](https://pixabay.com/service/license-summary/).
 - Cover photos from [Wikimedia Commons](https://commons.wikimedia.org/), resized and cropped to the cover shape (`aldrin-moon.jpg`, `march-on-washington.jpg` and `everson-museum-stairs.jpg` are also extended at the top with their plain sky or wall colour):
