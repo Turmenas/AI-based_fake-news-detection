@@ -71,7 +71,6 @@ body { margin: 0; overflow: hidden; background: #5c6b55; color: var(--ink); font
 .cover .kicker { font: 800 2.5cqw var(--f-sans); letter-spacing: .16em; background: var(--red); color: #fff; padding: .8cqw 1.6cqw; }
 .cover h1 { margin: 0; font: 800 8.6cqw/1.0 var(--f-sans); letter-spacing: -.01em; color: #fff; text-wrap: balance; text-shadow: 0 .4cqw 2cqw rgba(0,0,0,.45); }
 .cover .teaser { font: 600 2.7cqw/1.35 var(--f-sans); color: #fff; max-width: 62cqw; text-shadow: 0 .2cqw 1cqw rgba(0,0,0,.5); }
-.dogear { position: absolute; right: 0; bottom: 0; width: 8cqw; height: 8cqw; background: linear-gradient(135deg, transparent 50%, #e7e5df 50%, #fbfbf9 78%); box-shadow: -.6cqw -.6cqw 1.4cqw rgba(0,0,0,.18); }
 
 /* 2 psl.: skaitytojo forma */
 .write { width: 100%; box-sizing: border-box; height: 27cqw; resize: none; border: 0; outline: 0; padding: 0 1cqw; margin: 0;
