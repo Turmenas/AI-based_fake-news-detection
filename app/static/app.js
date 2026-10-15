@@ -53,9 +53,13 @@ class Scene {
 
   flip() {
     if (!this.ctx || this.muted || !this.flips.length) return;
-    const a = new Audio(pick(this.flips));  // nauja kopija kiekvienam vertimui, kad greiti vertimai nenukirstu vienas kito
+    const a = this.turn = Object.assign(new Audio(pick(this.flips)), { preservesPitch: false });  // nauja kopija kiekvienam vertimui, kad greiti vertimai nenukirstu vienas kito; greitesnis = ir auksciau, kaip tikras popierius
     this.#route(a, 3500, .35);  // tylesnis, be astriu aukstuju dazniu
     a.play().catch(() => {});
+  }
+
+  pace(speed) {  // iprastas vertimas pereina knyga per ~0.4 s (2.5 plocio/s) = normalus greitis; 0.5-2x ribos, kad garsas neiskreiptu
+    if (this.turn) this.turn.playbackRate += (Math.min(2, Math.max(.5, speed / 2.5)) - this.turn.playbackRate) * .3;  // .3 suglodina truksmingus peles judesius
   }
 
   #start() {
@@ -185,6 +189,11 @@ class Magazine {
       if (e.data === "user_fold" || (e.data === "flipping" && this.state !== "user_fold")) this.onFlip?.();  // greitas braukimas eina user_fold -> flipping, antras garsas nereikalingas
       this.state = e.data;
     });
+    let last = null;
+    addEventListener("pointermove", e => {  // tempimo greitis knygos plociais per sekunde, kad telefone ir kompiuteryje jaustusi vienodai
+      if (this.state === "user_fold" && last) this.onPace?.(Math.hypot(e.clientX - last.x, e.clientY - last.y) / el.clientWidth / Math.max(e.timeStamp - last.t, 1) * 1000);
+      last = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+    });
     addEventListener("keydown", e => {
       if (e.target.tagName === "TEXTAREA") return;  // rasant rodykles juda tekste, ne puslapiuose
       if (e.key === "ArrowRight") this.book.flipNext();
@@ -286,6 +295,7 @@ class Submission {
   const assets = await press.assets().catch(() => ({ scenes: {}, covers: [], sfx: [] }));  // be fono zurnalas vis tiek veikia
   const scene = new Scene(assets);
   magazine.onFlip = () => scene.flip();
+  magazine.onPace = speed => scene.pace(speed);
   const sound = document.getElementById("sound");  // "?" pastaba yra narsykles popover: atidaro, uzdaro su Esc ir paspaudus salia pati
   sound.hidden = !scene.audio && !scene.flips.length;  // be jokiu garsu jungiklio nereikia
   sound.addEventListener("click", () => { sound.textContent = scene.toggle() ? "Sound: off" : "Sound: on"; });
