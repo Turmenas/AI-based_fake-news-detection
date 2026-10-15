@@ -7,5 +7,3 @@ report/
 models/random_forest_tfidf.joblib
 models/distilbert_6way.keras
 models/bigru_6way.keras
-app/static/scenes/*/audio/*
-!app/static/scenes/*/audio/.gitkeep
