@@ -2,7 +2,6 @@ from pathlib import Path
 from urllib.parse import quote
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -15,12 +14,10 @@ class SceneLibrary:
     """Fono nuotraukos su garsais (scenes/<vieta>/ ir scenes/<vieta>/audio/) ir virseliai (covers/)."""
 
     PHOTOS, SOUNDS = {".jpg", ".jpeg", ".png", ".webp"}, {".mp3", ".ogg", ".wav"}
-
-    def __init__(self, root=STATIC):
-        self.root = root
+    root = STATIC
 
     def _files(self, folder, kinds):
-        return sorted(f"/static/{quote(p.relative_to(self.root).as_posix())}" for p in folder.glob("*") if p.suffix.lower() in kinds)  # quote: tarpai ir emoji failu varduose
+        return sorted(f"/{quote(p.relative_to(self.root).as_posix())}" for p in folder.glob("*") if p.suffix.lower() in kinds)  # quote: tarpai ir emoji failu varduose
 
     def listing(self):  # skaitom kaskart, kad nauji failai atsirastu be perkrovimo
         scenes = {d.name: {"photos": self._files(d, self.PHOTOS), "sounds": self._files(d / "audio", self.SOUNDS)}
@@ -39,12 +36,6 @@ class PhotoIn(BaseModel):
 
 headlines, photos, library = HeadlineModel(), PhotoModel(), SceneLibrary()  # modeliai kraunami viena karta paleidziant
 app = FastAPI(title="Headline Checker")
-app.mount("/static", StaticFiles(directory=STATIC), name="static")
-
-
-@app.get("/")
-def index():
-    return FileResponse(STATIC / "index.html")
 
 
 @app.get("/api/assets")
@@ -63,3 +54,6 @@ def check_photo(body: PhotoIn):
         return photos.check(body.image)
     except (ValueError, OSError):  # ne base64 arba ne paveikslelis
         raise HTTPException(400, "Not an image")
+
+
+app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")  # puslapis ir failai; po API, kad /api butu tikrinamas pirmas

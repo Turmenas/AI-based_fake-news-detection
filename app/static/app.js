@@ -23,10 +23,7 @@ const pct = p => (p * 100 >= 99.95 ? "99.9" : p * 100 < 0.05 ? "<0.1" : (p * 100
 
 
 class Press {
-  async assets() {
-    const r = await fetch("/api/assets");
-    return r.json();
-  }
+  assets() { return fetch("/api/assets").then(r => r.json()); }
   headline(text) { return this.#post("/api/headline", { text }); }
   photo(image) { return this.#post("/api/photo", { image }); }
 
@@ -153,10 +150,7 @@ class Magazine {
   constructor(el, issue) {
     this.issue = issue;
     document.getElementById("cover-date").textContent = DATE;
-    const p2 = document.getElementById("p2").querySelector(".pg");
-    p2.insertAdjacentHTML("afterbegin", this.#head(["The", "Conversation", "Reader submission"]));
-    p2.insertAdjacentHTML("beforeend", this.#folio(true, 2));
-    this.#fillStatic();
+    for (const page of el.querySelectorAll("[data-sec]")) this.#fill(page, page.querySelector(".pg").innerHTML);  // antraste ir folio visiems vidiniams puslapiams
     this.render(false);
     this.book = new St.PageFlip(el, { width: 400, height: 525, size: "stretch", minWidth: 280, maxWidth: 1000, minHeight: 368, maxHeight: 1313,
       showCover: true, maxShadowOpacity: .45, flippingTime: REDUCE ? 1 : 900, mobileScrollSupport: false, disableFlipByClick: true });  // 400x525 = TIME proporcijos
@@ -169,66 +163,25 @@ class Magazine {
   }
 
   render(inked) {
-    this.#page("p3", 3, ["The", "Brief", "Verdict"], this.issue.verdict());
-    this.#page("p4", 4, ["The", "Brief", "Word by word"], this.issue.words());
-    this.#page("p5", 5, ["The", "Brief", "By type"], this.issue.types());
-    this.#page("p6", 6, ["The", "Brief", "Photo"], this.issue.photoPage());
+    const pages = { p3: this.issue.verdict(), p4: this.issue.words(), p5: this.issue.types(), p6: this.issue.photoPage() };
+    for (const [id, html] of Object.entries(pages)) this.#fill(document.getElementById(id), html);
     const p3 = document.getElementById("p3");
     p3.classList.remove("inked");
     if (inked && !REDUCE) { void p3.offsetWidth; p3.classList.add("inked"); }  // offsetWidth perleidzia animacija is naujo
   }
 
-  #head([a, b, sub]) {
-    return `<div class="sec"><span class="sn">${a}<b>${b}</b></span>${sub ? `<span class="ss">${sub}</span>` : ""}</div>`;
-  }
-
-  #folio(left, n) {
-    return left ? `<div class="folio"><span class="n">${n}</span><b>FACT</b><span>${DATE}</span></div>`
+  #fill(page, html) {  // TIME stiliaus skyriaus antraste virsuje, puslapio numeris ir data apacioje
+    const [a, b, sub] = page.dataset.sec.split("|"), n = page.id.slice(1);
+    const head = `<div class="sec"><span class="sn">${a}<b>${b}</b></span>${sub ? `<span class="ss">${sub}</span>` : ""}</div>`;
+    const folio = page.classList.contains("left") ? `<div class="folio"><span class="n">${n}</span><b>FACT</b><span>${DATE}</span></div>`
       : `<div class="folio"><b>FACT</b><span>${DATE}</span><span class="n">${n}</span></div>`;
-  }
-
-  #page(id, n, sec, html) {
-    const el = document.getElementById(id);
-    el.querySelector(".pg").innerHTML = this.#head(sec) + html + this.#folio(el.classList.contains("left"), n);
-  }
-
-  #fillStatic() {
-    this.#page("p7", 7, ["The", "View", "Fine print"], `<h2>How far to trust this issue</h2><span class="by">By the FACT editors</span>
-      <ul class="limits">
-        <li>It judges writing style, not truth. A true story told like a joke can come out fake.</li>
-        <li>It learned from Reddit posts from 2008 to 2019. New names and topics can confuse it.</li>
-        <li>The fake and real labels come from the subreddit, not from fact-checkers.</li>
-        <li>It reads English headlines only.</li>
-        <li>The photo check learned one generator. It often calls polished real photos from other publishers generated.</li>
-      </ul>
-      <table class="acc"><tr><th>Models in this issue</th><th>Right</th></tr>
-        <tr><td>Headline, fake or real (DistilBERT)</td><td>89.1%</td></tr>
-        <tr><td>Headline, which of six types (DistilBERT)</td><td>81.3%</td></tr>
-        <tr><td>Photo, same source as training (CLIP)</td><td>99.6%</td></tr>
-        <tr><td>Photo, other publishers (CLIP)</td><td>75–82%</td></tr></table>`);
-    this.#page("p8", 8, ["The", "View", "Before you share"], `<h2>Four checks no model does for you</h2>
-      <ol class="checks">
-        <li><span><strong>Find the original.</strong> Who published it first, and are they real?</span></li>
-        <li><span><strong>Search the claim</strong> on a fact-checking site such as Demaskuok or EUvsDisinfo.</span></li>
-        <li><span><strong>Reverse-search the photo</strong> to see where and when it first appeared.</span></li>
-        <li><span><strong>Check the date.</strong> Old stories often come back as new ones.</span></li>
-      </ol>
-      <p class="small foot">This prototype ranks posts for a person to check. It does not decide what is true.</p>`);
-    this.#page("p9", 9, ["From the ", "Editor", ""], `<h2>How this issue was made</h2>
-      <p class="deck">Two models read every submission. Neither one knows what is true.</p>
-      <div class="cols">
-        <p>Every headline in FACT is read by DistilBERT, a language model we fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by the subreddit it came from, from r/TheOnion to r/usnews, so the model learned how fake and real posts tend to be written.</p>
-        <p>Photos go to CLIP, an image model that turns a picture into 768 numbers, and a small classifier trained on 10,000 news photos, half of them made by Midjourney. It is very good at that one generator and weaker on others.</p>
-        <p>Both verdicts sit side by side on page 3, because a true-sounding story can carry a made-up picture. Neither model knows what is true. They know what fake news on Reddit used to look like, which is why a person should always make the final call.</p>
-      </div>
-      <span class="sign">The editors</span>`);
+    page.querySelector(".pg").innerHTML = head + html + folio;
   }
 }
 
 
 class Submission {
-  #textTicket = 0;
-  #photoTicket = 0;
+  #tickets = { headline: 0, photo: 0 };
   #timer;
 
   constructor(press, issue, magazine) {
@@ -250,41 +203,33 @@ class Submission {
     for (const el of [this.write, this.slot]) for (const ev of ["mousedown", "touchstart"]) el.addEventListener(ev, e => e.stopPropagation());  // kitaip zurnalas pradeda versti puslapi
   }
 
-  async sendText() {
+  sendText() {
     clearTimeout(this.#timer);
     const text = this.write.value.trim();
     if (text === this.issue.text) return;
     this.issue.text = text;
-    const ticket = ++this.#textTicket;  // senesnis atsakymas neturi uzrasyti naujesnio
-    if (!text) { this.issue.headline = { state: "empty" }; return this.magazine.render(false); }
-    this.issue.headline = { state: "pending" };
+    if (text) return this.#send("headline", () => this.press.headline(text));
+    this.#tickets.headline++;  // istrintas tekstas: laukiantis atsakymas nebeturi nieko uzrasyti
+    this.issue.headline = { state: "empty" };
     this.magazine.render(false);
-    try {
-      const result = await this.press.headline(text);
-      if (ticket !== this.#textTicket) return;
-      this.issue.headline = { state: "done", ...result };
-    } catch {
-      if (ticket !== this.#textTicket) return;
-      this.issue.headline = { state: "error" };
-    }
-    this.magazine.render(true);
   }
 
-  async sendPhoto(f) {
+  sendPhoto(f) {
     if (!f || !f.type.startsWith("image/")) return;
     if (this.issue.photo.url) URL.revokeObjectURL(this.issue.photo.url);
-    const url = URL.createObjectURL(f), ticket = ++this.#photoTicket;
+    const url = URL.createObjectURL(f);
     this.#glue(url);
-    this.issue.photo = { state: "pending", url };
+    this.#send("photo", async () => this.press.photo(await this.#dataUrl(f)), { url });
+  }
+
+  async #send(kind, request, extra = {}) {
+    const ticket = ++this.#tickets[kind];  // senesnis atsakymas neturi uzrasyti naujesnio
+    this.issue[kind] = { state: "pending", ...extra };
     this.magazine.render(false);
-    try {
-      const result = await this.press.photo(await this.#dataUrl(f));
-      if (ticket !== this.#photoTicket) return;
-      this.issue.photo = { state: "done", url, ...result };
-    } catch {
-      if (ticket !== this.#photoTicket) return;
-      this.issue.photo = { state: "error", url };
-    }
+    let next;
+    try { next = { state: "done", ...extra, ...(await request()) }; } catch { next = { state: "error", ...extra }; }
+    if (ticket !== this.#tickets[kind]) return;
+    this.issue[kind] = next;
     this.magazine.render(true);
   }
 
