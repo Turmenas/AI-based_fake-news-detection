@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FACT · Headline Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,900;1,400&family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=Caveat:wght@500;700&family=Libre+Franklin:wght@400;600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="scene" id="scene" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="stage"><div id="book-wrap"><div id="book">
+  <div class="page cover" data-density="hard"><div class="photo" id="cover-photo"></div><div class="frame"></div><div class="mast">FACT</div>
+    <div class="date" id="cover-date"></div><div class="credit">Photo: FACT archive</div>
+    <div class="lines"><span class="kicker">IS IT REAL?</span><h1>Check any headline before you share it</h1>
+      <span class="teaser">Write it on page 2. Our AI reads it, looks at the photo and prints the verdict.</span></div>
+    <div class="dogear"></div></div>
+
+  <div class="page left" id="p2"><div class="pg">
+    <h2>Your headline</h2>
+    <p>Write the headline you want checked on the lines. Press Enter when you are done.</p>
+    <textarea class="write" id="write" rows="4" maxlength="300" spellcheck="false" aria-label="Headline to check" placeholder="Write it here…"></textarea>
+    <span class="label">Its photo</span>
+    <div class="glue"><button type="button" class="slot" id="slot" aria-label="Glue in a photo: click to choose one, or drop it here">Glue photo here</button>
+      <p class="small">If the headline came with a photo, click the box or drop the image on it.</p></div>
+    <p class="small foot">The verdict for both prints on the opposite page.</p></div></div>
+  <div class="page right" id="p3"><div class="pg"></div></div>
+  <div class="page left" id="p4"><div class="pg"></div></div>
+  <div class="page right" id="p5"><div class="pg"></div></div>
+  <div class="page left" id="p6"><div class="pg"></div></div>
+  <div class="page right" id="p7"><div class="pg"></div></div>
+  <div class="page left" id="p8"><div class="pg"></div></div>
+  <div class="page right" id="p9"><div class="pg"></div></div>
+  <div class="page back" data-density="hard"><div class="pg"><span class="psa">A public service message</span>
+    <div class="slogan">Think.<br>Then share.</div><p>From FACT and the Headline Checker, a classroom prototype for spotting fake news.</p></div></div>
+</div></div></div>
+
+<button type="button" class="help" id="help" aria-expanded="false" aria-controls="note" aria-label="How to use">?</button>
+<div class="note" id="note" hidden>
+  <h3>How to read FACT</h3>
+  <ol>
+    <li>Open the magazine: drag the bottom-right corner, click a corner, or press the right arrow key.</li>
+    <li>Write the headline you want checked on the lines on page 2, then press Enter.</li>
+    <li>If it came with a photo, click the dashed box or drop the image on it.</li>
+    <li>Both verdicts print on page 3. Keep turning pages to see why.</li>
+  </ol>
+  <button type="button" id="sound">Sound: on</button>
+</div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
