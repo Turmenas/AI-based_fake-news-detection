@@ -39,7 +39,11 @@ class Scene {
   constructor(assets) {
     const place = pick(Object.values(assets.scenes));
     if (place) document.getElementById("scene").style.backgroundImage = `url("${pick(place.photos)}")`;
-    if (assets.covers.length) document.getElementById("cover-photo").style.backgroundImage = `url("${pick(assets.covers)}")`;
+    const cover = pick(assets.covers);
+    if (cover) {
+      document.getElementById("cover-photo").style.backgroundImage = `url("${cover.url}")`;
+      document.getElementById("cover-credit").textContent = cover.credit && `Photo: ${cover.credit}`;
+    }
     this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, volume: 0 }) : null;  // garsas is tos pacios vietos kaip nuotrauka
     this.flips = assets.sfx;
     this.muted = false;

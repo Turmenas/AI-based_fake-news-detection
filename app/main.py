@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from urllib.parse import quote
 
@@ -16,14 +17,22 @@ class SceneLibrary:
     PHOTOS, SOUNDS = {".jpg", ".jpeg", ".png", ".webp"}, {".mp3", ".ogg", ".wav"}
     root = STATIC
 
+    def _url(self, p):
+        return f"/{quote(p.relative_to(self.root).as_posix())}"  # quote: tarpai ir emoji failu varduose
+
     def _files(self, folder, kinds):
-        return sorted(f"/{quote(p.relative_to(self.root).as_posix())}" for p in folder.glob("*") if p.suffix.lower() in kinds)  # quote: tarpai ir emoji failu varduose
+        return sorted(self._url(p) for p in folder.glob("*") if p.suffix.lower() in kinds)
+
+    def _covers(self):  # kiekvienam virseliui jo fotografas is covers/credits.json
+        folder = self.root / "covers"
+        credits = json.loads((folder / "credits.json").read_text(encoding="utf-8")) if (folder / "credits.json").exists() else {}
+        return [{"url": self._url(p), "credit": credits.get(p.name, "")} for p in sorted(folder.glob("*")) if p.suffix.lower() in self.PHOTOS]
 
     def listing(self):  # skaitom kaskart, kad nauji failai atsirastu be perkrovimo
         scenes = {d.name: {"photos": self._files(d, self.PHOTOS), "sounds": self._files(d / "audio", self.SOUNDS)}
                   for d in sorted((self.root / "scenes").iterdir()) if d.is_dir()}
         return {"scenes": {k: v for k, v in scenes.items() if v["photos"]},  # vieta be nuotrauku netinka fonui
-                "covers": self._files(self.root / "covers", self.PHOTOS),
+                "covers": self._covers(),
                 "sfx": self._files(self.root / "sfx", self.SOUNDS)}
 
 
