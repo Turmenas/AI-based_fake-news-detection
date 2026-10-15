@@ -23,7 +23,7 @@ A web page styled as a news magazine (FACT). The reader writes a headline on pag
 .\.venv\Scripts\python -m uvicorn app.main:app
 ```
 
-Then open http://127.0.0.1:8000. It needs `models/distilbert_6way.keras` and `models/clip_logreg.joblib` from those notebooks. The first start loads both models, which takes about a minute.
+Then open http://127.0.0.1:8000, or double-click `run.bat`, which starts the server in its own window and opens the browser once the models are loaded. It needs `models/distilbert_6way.keras` and `models/clip_logreg.joblib` from those notebooks. The first start loads both models, which takes about a minute.
 
 - `app/static/scenes/<place>/` holds the background photos, picked at random on each load, and `app/static/scenes/<place>/audio/` the matching background sounds (not in the repository). `app/static/covers/` holds cover images.
 - Background photos from [Unsplash](https://unsplash.com/license): Daan Evers (café), Yasir Ekinci (city), Mark Harpur and Mike Benna (nature).
