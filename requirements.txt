@@ -1,4 +1,5 @@
 --extra-index-url https://download.pytorch.org/whl/cu128
+fastapi==0.143.2
 huggingface-hub==2.2.0
 joblib==1.6.0
 jupyter==1.1.1
@@ -9,9 +10,11 @@ numpy==2.5.2
 pandas==3.0.6
 pillow==12.3.0
 pyarrow==25.0.1
+pydantic==2.14.1
 requests==2.34.2
 scikit-learn==1.9.1
 scipy==1.18.1
 seaborn==0.13.2
 tokenizers==0.23.3
 torch==2.11.0+cu128
+uvicorn==0.54.0
