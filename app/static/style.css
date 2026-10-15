@@ -62,7 +62,7 @@ body { margin: 0; overflow: hidden; background: #5c6b55; color: var(--ink); font
 .cover .frame { position: absolute; inset: 0; border: 4.4cqw solid var(--red); }
 .cover .mast { position: absolute; top: 5.2cqw; left: 0; right: 0; text-align: center; font: 900 30.5cqw/.8 var(--f-mast); letter-spacing: -.03em; color: #fff; filter: drop-shadow(0 .3cqw 1.6cqw rgba(0,0,0,.25)); }  /* filter, ne text-shadow: seselis turi kristi ir nuo ?-T */
 .cover .mast .qt { display: inline-block; width: .7245em; height: .77em; margin-bottom: -.01em; background: currentColor;
-  -webkit-mask: url(qt.svg) center / contain no-repeat; mask: url(qt.svg) center / contain no-repeat; }  /* Bodoni Moda T su klaustuko lanku; dydis = T plotis ir aukstis em */
+  -webkit-mask: url(qt.svg) center / contain no-repeat; mask: url(qt.svg) center / contain no-repeat; }  /* Bodoni Moda T su klaustuko lanku; kaukei svarbus tik permatomumas, todel failo raudona spalva nesimato; dydis = T plotis ir aukstis em */
 .cover .date { position: absolute; top: 30cqw; right: 9cqw; font: 600 2.1cqw var(--f-sans); letter-spacing: .16em; text-transform: uppercase; color: #fff; }
 .cover .credit { position: absolute; left: 6.2cqw; top: 70cqh; transform: rotate(-90deg); transform-origin: left top; font: 600 1.6cqw var(--f-sans); letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.75); white-space: nowrap; }
 .cover .lines { position: absolute; left: 9cqw; right: 9cqw; bottom: 10cqw; display: grid; gap: 2.4cqw; justify-items: start; }

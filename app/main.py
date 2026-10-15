@@ -11,7 +11,7 @@ STATIC = Path(__file__).resolve().parent / "static"
 
 
 class SceneLibrary:
-    """Fono nuotraukos su garsais (scenes/<vieta>/ ir scenes/<vieta>/audio/) ir virseliai (covers/)."""
+    """Fono nuotraukos su garsais (scenes/<vieta>/ ir scenes/<vieta>/audio/), virseliai (covers/) ir puslapio vertimo garsai (sfx/)."""
 
     PHOTOS, SOUNDS = {".jpg", ".jpeg", ".png", ".webp"}, {".mp3", ".ogg", ".wav"}
     root = STATIC
@@ -23,7 +23,8 @@ class SceneLibrary:
         scenes = {d.name: {"photos": self._files(d, self.PHOTOS), "sounds": self._files(d / "audio", self.SOUNDS)}
                   for d in sorted((self.root / "scenes").iterdir()) if d.is_dir()}
         return {"scenes": {k: v for k, v in scenes.items() if v["photos"]},  # vieta be nuotrauku netinka fonui
-                "covers": self._files(self.root / "covers", self.PHOTOS)}
+                "covers": self._files(self.root / "covers", self.PHOTOS),
+                "sfx": self._files(self.root / "sfx", self.SOUNDS)}
 
 
 class HeadlineIn(BaseModel):

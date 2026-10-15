@@ -41,7 +41,16 @@ class Scene {
     if (place) document.getElementById("scene").style.backgroundImage = `url("${pick(place.photos)}")`;
     if (assets.covers.length) document.getElementById("cover-photo").style.backgroundImage = `url("${pick(assets.covers)}")`;
     this.audio = place && place.sounds.length ? Object.assign(new Audio(pick(place.sounds)), { loop: true, volume: 0 }) : null;  // garsas is tos pacios vietos kaip nuotrauka
+    this.flips = assets.sfx;
+    this.muted = false;
     for (const ev of ["pointerdown", "keydown"]) addEventListener(ev, () => this.#start(), { once: true });  // narsykle neleidzia garso iki pirmo paspaudimo
+  }
+
+  flip() {
+    if (this.muted || !this.flips.length) return;
+    const a = new Audio(pick(this.flips));  // nauja kopija kiekvienam vertimui, kad greiti vertimai nenukirstu vienas kito
+    a.volume = .6;
+    a.play().catch(() => {});
   }
 
   #start() {
@@ -52,8 +61,9 @@ class Scene {
   }
 
   toggle() {
-    if (this.audio) this.audio.muted = !this.audio.muted;
-    return !this.audio || this.audio.muted;
+    this.muted = !this.muted;
+    if (this.audio) this.audio.muted = this.muted;
+    return this.muted;
   }
 }
 
@@ -155,6 +165,7 @@ class Magazine {
     this.book = new St.PageFlip(el, { width: 400, height: 525, size: "stretch", minWidth: 280, maxWidth: 1000, minHeight: 368, maxHeight: 1313,
       showCover: true, maxShadowOpacity: .45, flippingTime: REDUCE ? 1 : 900, mobileScrollSupport: false, disableFlipByClick: true });  // 400x525 = TIME proporcijos
     this.book.loadFromHTML(el.querySelectorAll(".page"));
+    this.book.on("changeState", e => { if (e.data === "flipping") this.onFlip?.(); });  // garsas vos puslapis pradeda verstis
     addEventListener("keydown", e => {
       if (e.target.tagName === "TEXTAREA") return;  // rasant rodykles juda tekste, ne puslapiuose
       if (e.key === "ArrowRight") this.book.flipNext();
@@ -254,7 +265,7 @@ class HelpNote {
     this.help = document.getElementById("help");
     this.note = document.getElementById("note");
     const sound = document.getElementById("sound");
-    sound.hidden = !scene.audio;  // jei audio/ aplankas tuscias, jungiklio nereikia
+    sound.hidden = !scene.audio && !scene.flips.length;  // be jokiu garsu jungiklio nereikia
     sound.addEventListener("click", () => { sound.textContent = scene.toggle() ? "Sound: off" : "Sound: on"; });
     this.help.addEventListener("click", () => this.toggle());
     addEventListener("keydown", e => { if (e.key === "Escape") this.toggle(false); });
@@ -272,6 +283,8 @@ class HelpNote {
   const press = new Press(), issue = new Issue();
   const magazine = new Magazine(document.getElementById("book"), issue);
   new Submission(press, issue, magazine);
-  const assets = await press.assets().catch(() => ({ scenes: {}, covers: [] }));  // be fono zurnalas vis tiek veikia
-  new HelpNote(new Scene(assets));
+  const assets = await press.assets().catch(() => ({ scenes: {}, covers: [], sfx: [] }));  // be fono zurnalas vis tiek veikia
+  const scene = new Scene(assets);
+  magazine.onFlip = () => scene.flip();
+  new HelpNote(scene);
 })();
