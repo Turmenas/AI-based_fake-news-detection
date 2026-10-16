@@ -122,12 +122,12 @@ class Issue {
     if (h.state === "done" && p.state === "done") {
       const fake = h.p_fake >= .5;
       together = `<p class="together">${fake && p.ai ? "Both the headline and the photo look fake."
-        : p.ai ? "The headline reads like real news, but the photo looks AI-generated. Find where the photo came from before sharing (p. 8)."
+        : p.ai ? "The headline reads like real news, but the photo looks AI-generated. Check where it came from (p. 8)."
         : fake ? "The photo looks real, but the headline reads like fake news. A real photo can be put next to a false story."
         : "Both look real. That is still not proof, so check the source before sharing (p. 8)."}</p>`;
     }
     return `<div class="vblock">${head}</div>${pic}${together}
-      <p class="small foot">DistilBERT reads the headline and was right on 89.1% of 59,319 test posts. CLIP checks the photo. Pages 4 to 6 explain both.</p>`;
+      <p class="small foot">DistilBERT reads the headline, CLIP checks the photo. Pages 4 to 6 explain both.</p>`;
   }
 
   words() {
