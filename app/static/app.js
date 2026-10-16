@@ -122,12 +122,12 @@ class Issue {
     if (h.state === "done" && p.state === "done") {
       const fake = h.p_fake >= .5;
       together = `<p class="together">${fake && p.ai ? "Both the headline and the photo look fake."
-        : p.ai ? "Careful: the headline reads like real news, but the photo looks AI-generated. Find where the photo came from before sharing (p. 8)."
+        : p.ai ? "The headline reads like real news, but the photo looks AI-generated. Find where the photo came from before sharing (p. 8)."
         : fake ? "The photo looks real, but the headline reads like fake news. A real photo can be put next to a false story."
         : "Both look real. That is still not proof, so check the source before sharing (p. 8)."}</p>`;
     }
     return `<div class="vblock">${head}</div>${pic}${together}
-      <p class="small foot">Two models, two verdicts: DistilBERT reads the headline (right on 89.1% of 59,319 test posts), CLIP checks the photo. Details on pages 4 to 6.</p>`;
+      <p class="small foot">DistilBERT reads the headline and was right on 89.1% of 59,319 test posts. CLIP checks the photo. Pages 4 to 6 explain both.</p>`;
   }
 
   words() {
@@ -141,17 +141,17 @@ class Issue {
     return top + `<p class="deck">Each word was taken out in turn and the headline checked again. The longer the bar, the more that word moved the verdict.</p>
       <div class="key"><span style="color:var(--real)">← TOWARD REAL</span><span style="color:var(--fake)">TOWARD FAKE →</span></div>
       <div class="words">${bars}</div>
-      <p class="small foot">This explains the model, not the facts. A word like “study” is a style clue it learned from Reddit, not proof of anything.</p>`;
+      <p class="small foot">The bars show what the model reacted to. A word like “study” is a style clue it picked up from Reddit and says nothing about whether the story is true.</p>`;
   }
 
   types() {
     const h = this.headline;
     if (h.state !== "done") return `<h2>Six kinds of fake</h2>
-      <p>Satire, false connection, imposter content, manipulated content, misleading content, or real news. The chances for your headline appear here.</p>`;
+      <p>Once there is a verdict, this page shows how close your headline is to each of the six Fakeddit types, such as satire or misleading content.</p>`;
     const top = Object.keys(h.types).reduce((a, b) => (h.types[a] >= h.types[b] ? a : b));
     return `<h2>${TYPES[top][2]}</h2>
       <div class="types">${Object.entries(TYPES).map(([k, [n, desc]]) => `<div class="type${k === top ? " top" : ""}"><span class="n">${n}</span><span class="v">${pct(h.types[k])}%</span><span class="d">${desc}</span><span class="t"><b style="width:${(h.types[k] * 100).toFixed(1)}%"></b></span></div>`).join("")}</div>
-      <p class="small foot">Fakeddit labels whole subreddits, not single posts. “Satire” means the headline is written like r/TheOnion, not that a fact-checker reviewed it.</p>`;
+      <p class="small foot">Fakeddit gives every post in a subreddit the same label. “Satire” here means the headline is written like r/TheOnion posts, and no fact-checker has looked at it.</p>`;
   }
 
   photoPage() {
@@ -167,7 +167,7 @@ class Issue {
       <div class="pair"><div class="shot"><img src="${p.url}" alt="The glued-in photo"></div><div>
         <div class="mid" style="color:${tone}">${Math.round(p.p_ai * 100)}<small>%</small></div><div class="big-cap">sure it is AI-generated</div></div></div>
       <div class="gauge"><b style="width:${Math.round(p.p_ai * 100)}%;background:${tone}"></b><span class="cut" style="left:${p.cut * 100}%"><span>cut-off ${p.cut}</span></span></div>${table}
-      <p class="small foot">No combined score: the two models learned from different data, so both verdicts sit side by side on page 3.</p>`;
+      <p class="small foot">The two models learned from different data, so their verdicts are kept apart on page 3 instead of merged into one score.</p>`;
   }
 }
 
