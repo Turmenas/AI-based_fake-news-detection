@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' blob:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="FACT is a prototype that checks whether a headline reads like fake news and whether its photo looks AI-generated, laid out as a magazine you flip through.">
+<title>FACT · Headline Checker</title>
+<link rel="preload" href="fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/libre-franklin-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
+<link rel="icon" href="qt.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scene" id="scene" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="stage"><div id="book-wrap"><div id="book">
+  <div class="page cover" data-density="hard"><div class="photo" id="cover-photo"></div><div class="frame"></div><div class="mast" role="img" aria-label="FACT">FAC<span class="qt"></span></div>
+    <div class="date" id="cover-date"></div>
+    <div class="lines"><span class="kicker">IS IT REAL?</span><h1>Check any headline before you share it</h1>
+      <span class="teaser">Write it on page 2. An AI reads it, checks the photo and prints the verdict.</span></div>
+    <div class="credit" id="cover-credit"></div></div>
+
+  <div class="page left" id="p2" data-sec="The|Conversation|Reader submission"><div class="pg">
+    <h2>Your headline</h2>
+    <p>Write the headline you want checked on the lines. Press Enter when you are done.</p>
+    <textarea class="write" id="write" rows="4" maxlength="300" spellcheck="false" aria-label="Headline to check" placeholder="Write it here…"></textarea>
+    <span class="label">Its photo</span>
+    <div class="glue"><button type="button" class="slot" id="slot" aria-label="Glue in a photo. Click to choose one, or drop it here">Glue photo here</button>
+      <p class="small">If the headline came with a photo, click the box or drop the image on it.</p></div>
+    <p class="small foot">The verdict for both prints on the opposite page.</p></div></div>
+  <div class="page right" id="p3" data-sec="The|Brief|Verdict"><div class="pg"></div></div>
+  <div class="page left" id="p4" data-sec="The|Brief|Word by word"><div class="pg"></div></div>
+  <div class="page right" id="p5" data-sec="The|Brief|By type"><div class="pg"></div></div>
+  <div class="page left" id="p6" data-sec="The|Brief|Photo"><div class="pg"></div></div>
+  <div class="page right" id="p7" data-sec="The|View|Fine print"><div class="pg">
+    <h2>How far to trust this issue</h2><span class="by">By the FACT editors</span>
+    <ul class="limits">
+      <li>It judges how a headline is written. A true story told like a joke can come out fake.</li>
+      <li>It learned from Reddit posts from 2008 to 2019. New names and topics can confuse it.</li>
+      <li>Each post was labelled fake or real by the subreddit it came from. No fact-checker looked at them.</li>
+      <li>It reads English headlines only.</li>
+      <li>The photo check learned one generator. It often mistakes polished real photos from other publishers for AI ones.</li>
+    </ul>
+    <table class="acc"><tr><th>Models in this issue</th><th>Right</th></tr>
+      <tr><td>Headline, fake or real (DistilBERT)</td><td>89.1%</td></tr>
+      <tr><td>Headline, which of six types (DistilBERT)</td><td>81.3%</td></tr>
+      <tr><td>Photo, same source as training (CLIP)</td><td>99.6%</td></tr>
+      <tr><td>Photo, other publishers (CLIP)</td><td>75 to 82%</td></tr></table></div></div>
+  <div class="page left" id="p8" data-sec="The|View|Before you share"><div class="pg">
+    <h2>Four checks no model does for you</h2>
+    <ol class="checks">
+      <li><span><strong>Find the original.</strong> Who published it first, and are they real?</span></li>
+      <li><span><strong>Search the claim</strong> on a fact-checking site such as Demaskuok or EUvsDisinfo.</span></li>
+      <li><span><strong>Reverse-search the photo</strong> to see where and when it first appeared.</span></li>
+      <li><span><strong>Check the date.</strong> Old stories often come back as new ones.</span></li>
+    </ol>
+    <p class="small foot">The verdict on page 3 describes how the headline is written. Whether the story is true is still for you to check.</p></div></div>
+  <div class="page right" id="p9" data-sec="From the |Editor|"><div class="pg">
+    <h2>How this issue was made</h2>
+    <p class="deck">A language model reads the headline and an image model checks the photo.</p>
+    <div class="cols">
+      <p>Every headline in FACT is read by DistilBERT, a language model that was fine-tuned on 564,000 Reddit posts from the Fakeddit dataset. Each post was labelled by its subreddit, so the model learned how fake and real posts tend to be written.</p>
+      <p>Photos go to CLIP and a small classifier trained on 10,000 news photos, half of them made by Midjourney. It knows that one generator well and others less.</p>
+      <p>Neither model checks facts, so the checks on page 8 are still up to the reader.</p>
+    </div>
+    <span class="sign">The editors</span></div></div>
+  <div class="page back" data-density="hard"><div class="pg"><span class="psa">A public service message</span>
+    <div class="slogan">Think.<br>Then share.</div><p>From FACT and the Headline Checker, a prototype for spotting fake news.</p></div></div>
+</div></div></div>
+
+<button type="button" class="help" popovertarget="note" aria-label="How to use">?</button>
+<div class="note" id="note" popover>
+  <h3>How to read FACT</h3>
+  <ol>
+    <li>Open the magazine by swiping, dragging or clicking a page corner, or with the right arrow key.</li>
+    <li>Write the headline you want checked on the lines on page 2, then press Enter.</li>
+    <li>If it came with a photo, click the dashed box or drop the image on it.</li>
+    <li>Both verdicts print on page 3. Keep turning pages to see why.</li>
+  </ol>
+  <button type="button" id="sound">Sound: on</button>
+</div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script src="page-flip.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
